@@ -1,3 +1,4 @@
+
 'use client';
 
 import type { Incident, IncidentStatus, WhatsAppResponseType } from '@/types/incident';
@@ -5,7 +6,7 @@ import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle }
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Separator } from '@/components/ui/separator';
-import { AlertTriangle, CheckCircle2, XCircle, Clock, Send, ThumbsUp, ThumbsDown, HelpCircle, MessageSquareText, FileText, Sparkles, CalendarDays, Check, Ban, Loader2 } from 'lucide-react';
+import { AlertTriangle, CheckCircle2, XCircle, Clock, Send, ThumbsUp, ThumbsDown, HelpCircle, MessageSquareText, FileText, Sparkles, CalendarDays, Check, Ban, Loader2, Tag } from 'lucide-react';
 import { updateIncidentStatusAction, resendVerificationAction } from '@/app/actions';
 import { useToast } from '@/hooks/use-toast';
 import { useState, useTransition } from 'react';
@@ -33,11 +34,19 @@ const StatusIcon = ({ status }: { status: IncidentStatus }) => {
 const getStatusBadgeVariant = (status: IncidentStatus): "default" | "secondary" | "destructive" | "outline" => {
   switch (status) {
     case 'Pending': return 'secondary';
-    case 'Verified': return 'default'; // Will use primary color for bg
+    case 'Verified': return 'default'; 
     case 'Fake': return 'destructive';
-    case 'On Hold': return 'outline'; // Blue-ish based on accent
+    case 'On Hold': return 'outline'; 
     default: return 'secondary';
   }
+}
+
+const getCategoryBadgeVariant = (category?: string): "default" | "secondary" | "outline" => {
+    if (!category) return "secondary";
+    // Simple logic for category color, can be expanded
+    if (["Fire", "Crime", "Public Safety"].includes(category)) return "destructive";
+    if (["Traffic", "Utility Outage"].includes(category)) return "outline";
+    return "secondary";
 }
 
 export function IncidentCard({ incident }: IncidentCardProps) {
@@ -71,7 +80,7 @@ export function IncidentCard({ incident }: IncidentCardProps) {
   const isLoading = isUpdating || isResending;
 
   return (
-    <Card className="w-full shadow-lg transition-all duration-300 ease-in-out hover:shadow-xl animate-in fade-in-0 slide-in-from-bottom-5">
+    <Card className="w-full shadow-lg transition-all duration-300 ease-in-out hover:shadow-xl animate-in fade-in-0 slide-in-from-bottom-5 flex flex-col">
       <CardHeader>
         <div className="flex justify-between items-start">
           <div>
@@ -80,16 +89,24 @@ export function IncidentCard({ incident }: IncidentCardProps) {
               Incident Report
             </CardTitle>
             <CardDescription className="text-xs text-muted-foreground">
-              ID: {incident.id.substring(0,18)}...
+              ID: {incident.id.substring(0,10)}... (Reddit: {incident.redditPostId.substring(0,10)}...)
             </CardDescription>
           </div>
-          <Badge variant={getStatusBadgeVariant(incident.status)} className="flex items-center gap-1.5 py-1 px-2.5">
-            <StatusIcon status={incident.status} />
-            {incident.status}
-          </Badge>
+           <div className="flex flex-col items-end gap-1">
+            <Badge variant={getStatusBadgeVariant(incident.status)} className="flex items-center gap-1.5 py-1 px-2.5">
+              <StatusIcon status={incident.status} />
+              {incident.status}
+            </Badge>
+            {incident.category && (
+              <Badge variant={getCategoryBadgeVariant(incident.category)} className="flex items-center gap-1.5 py-1 px-2 text-xs">
+                <Tag className="h-3.5 w-3.5" />
+                {incident.category}
+              </Badge>
+            )}
+          </div>
         </div>
       </CardHeader>
-      <CardContent className="space-y-4">
+      <CardContent className="space-y-4 flex-grow">
         <div>
           <h4 className="font-semibold text-sm mb-1 flex items-center gap-1.5"><FileText className="h-4 w-4 text-muted-foreground"/> Original Post Content:</h4>
           <div className="text-sm bg-muted/50 p-3 rounded-md max-h-32 overflow-y-auto text-muted-foreground">
@@ -124,7 +141,7 @@ export function IncidentCard({ incident }: IncidentCardProps) {
         )}
 
       </CardContent>
-      <CardFooter className="flex flex-col sm:flex-row justify-between items-center gap-2 pt-4 border-t">
+      <CardFooter className="flex flex-col sm:flex-row justify-between items-center gap-2 pt-4 border-t mt-auto">
         <div className="flex flex-wrap gap-2">
           <Button
             size="sm"

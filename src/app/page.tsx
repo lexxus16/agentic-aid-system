@@ -1,8 +1,9 @@
+
 import { getIncidents } from '@/app/actions';
 import { IncidentCard } from '@/components/incident-card';
-import { IncidentForm } from '@/components/incident-form';
 import { Separator } from '@/components/ui/separator';
 import { ListChecks } from 'lucide-react';
+import { FetchNewPostsButton } from '@/components/fetch-new-posts-button';
 
 export const dynamic = 'force-dynamic'; // Ensure fresh data on each request
 
@@ -10,10 +11,12 @@ export default async function DashboardPage() {
   const incidents = await getIncidents();
 
   return (
-    <div className="space-y-12">
-      <IncidentForm />
-
-      <Separator className="my-8" />
+    <div className="space-y-8">
+      <div className="flex justify-start">
+        <FetchNewPostsButton />
+      </div>
+      
+      <Separator />
 
       <section>
         <h2 className="text-3xl font-headline font-semibold mb-8 flex items-center gap-3 text-primary">
@@ -27,7 +30,7 @@ export default async function DashboardPage() {
             </svg>
             <h3 className="mt-2 text-xl font-medium text-foreground">No incidents reported</h3>
             <p className="mt-1 text-sm text-muted-foreground">
-              Get started by reporting a new incident using the form above.
+              Click the "Check for New Incidents" button to fetch and process reports.
             </p>
           </div>
         ) : (

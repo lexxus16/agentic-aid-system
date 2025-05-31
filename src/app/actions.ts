@@ -1,9 +1,11 @@
+
 'use server';
 
 import { revalidatePath } from 'next/cache';
 import { summarizeIncident } from '@/ai/flows/summarize-incident';
-import { db } from '@/lib/firebase-admin'; // Using the mock db for now
+import { db } from '@/lib/firebase-admin';
 import type { Incident, IncidentStatus, WhatsAppResponseType } from '@/types/incident';
+import { getMockRedditPosts, type MockRedditPost } from '@/lib/mock-reddit';
 
 export async function getIncidents(): Promise<Incident[]> {
   try {
@@ -13,7 +15,6 @@ export async function getIncidents(): Promise<Incident[]> {
     }
     let incidents = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() } as Incident));
     
-    // Manual sort if mock orderBy doesn't work as expected for dates
     incidents.sort((a, b) => new Date(b.extractedAt).getTime() - new Date(a.extractedAt).getTime());
     
     return incidents;
@@ -23,36 +24,53 @@ export async function getIncidents(): Promise<Incident[]> {
   }
 }
 
-export async function addIncidentAction(formData: FormData): Promise<{ success: boolean; message?: string; incidentId?: string }> {
-  const redditPostContent = formData.get('redditPostContent') as string;
-
-  if (!redditPostContent || redditPostContent.trim() === '') {
-    return { success: false, message: 'Reddit post content cannot be empty.' };
-  }
-
+export async function fetchAndProcessNewRedditPostsAction(): Promise<{ success: boolean; message: string; newIncidentsCount: number }> {
   try {
-    const summaryResult = await summarizeIncident({ redditPostContent });
-    const geminiSummary = summaryResult.summary;
-
-    const newIncident: Omit<Incident, 'id'> = {
-      redditPostId: `rd_${Date.now()}`, // Mock Reddit Post ID
-      redditPostContent,
-      geminiSummary,
-      extractedAt: new Date().toISOString(),
-      status: 'Pending',
-      // Simulate WhatsApp alert sent
-      whatsAppSentAt: new Date().toISOString(), 
-    };
-
-    const docRef = await db.collection('incidents').add(newIncident);
+    const mockPosts = getMockRedditPosts();
+    const existingIncidents = await getIncidents();
+    const existingRedditPostIds = new Set(existingIncidents.map(inc => inc.redditPostId));
     
-    revalidatePath('/'); // Revalidate dashboard page
-    return { success: true, message: 'Incident added and summary generated.', incidentId: docRef.id };
+    let newIncidentsCount = 0;
+    const processingPromises: Promise<void>[] = [];
+
+    for (const post of mockPosts) {
+      if (!existingRedditPostIds.has(post.id)) {
+        processingPromises.push(
+          (async () => {
+            const summaryResult = await summarizeIncident({ redditPostContent: post.content });
+            
+            const newIncident: Omit<Incident, 'id'> = {
+              redditPostId: post.id,
+              redditPostContent: post.content,
+              geminiSummary: summaryResult.summary,
+              category: summaryResult.category,
+              extractedAt: post.createdAt, // Use post's creation time
+              status: 'Pending',
+              whatsAppSentAt: new Date().toISOString(), // Simulate initial alert sent
+            };
+
+            await db.collection('incidents').add(newIncident);
+            newIncidentsCount++;
+          })()
+        );
+      }
+    }
+
+    await Promise.all(processingPromises);
+
+    if (newIncidentsCount > 0) {
+      revalidatePath('/');
+      return { success: true, message: `Successfully processed ${newIncidentsCount} new incident(s).`, newIncidentsCount };
+    } else {
+      return { success: true, message: 'No new incidents found to process.', newIncidentsCount: 0 };
+    }
+
   } catch (error: any) {
-    console.error("Error in addIncidentAction:", error);
-    return { success: false, message: error.message || 'Failed to add incident.' };
+    console.error("Error in fetchAndProcessNewRedditPostsAction:", error);
+    return { success: false, message: error.message || 'Failed to fetch or process new incidents.', newIncidentsCount: 0 };
   }
 }
+
 
 export async function updateIncidentStatusAction(
   incidentId: string,
@@ -66,15 +84,12 @@ export async function updateIncidentStatusAction(
       updateData.whatsAppResponseAt = new Date().toISOString();
     }
 
-    // Logic for "Real" -> Forward to NGOs (mock)
     if (status === 'Verified' && response === 'Real') {
       console.log(`Incident ${incidentId} verified as Real. Forwarding to NGOs/media (mocked).`);
-      // Here you would implement actual email/SMS forwarding
     }
 
-    // Logic for "Not Confirmed" -> Set timer (mock)
     if (status === 'On Hold' && response === 'Not Confirmed') {
-      updateData.lastVerificationAttemptAt = new Date().toISOString(); // Resetting timer for resend
+      updateData.lastVerificationAttemptAt = new Date().toISOString(); 
       console.log(`Incident ${incidentId} marked as Not Confirmed. Will resend verification in 24h (mocked).`);
     }
     
@@ -91,9 +106,7 @@ export async function resendVerificationAction(incidentId: string): Promise<{ su
   try {
     await db.collection('incidents').doc(incidentId).update({
       lastVerificationAttemptAt: new Date().toISOString(),
-      // Potentially reset status to 'Pending' or keep 'On Hold'
-      // status: 'Pending', 
-      whatsAppSentAt: new Date().toISOString(), // Mark as resent
+      whatsAppSentAt: new Date().toISOString(), 
     });
     console.log(`Verification resent for incident ${incidentId} (mocked).`);
     revalidatePath('/');
