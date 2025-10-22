@@ -75,26 +75,12 @@ AidConnect is a fully autonomous **multi-agent AI system** that continuously mon
 
 ---
 
+
 ## 🏗️ System Architecture
 
-
----
-
-Or, if you want a **more visually styled version** that looks cleaner on GitHub, use this **ASCII diagram with code fencing**:
-
-```markdown
-## 🏗️ System Architecture
-
-```mermaid
-flowchart TD
-    A[Social Media APIs] --> B[Data Scraper Agent]
-    B --> C[Gemini AI Summarizer]
-    C --> D[Verification Agent]
-    D --> E[WhatsApp Business API]
-    E --> F[Police / Authorities]
-    D --> G[Incident Report Generator]
-    G --> H[NGO + Media Dissemination Module]
-    H --> I[Firebase Backend for Storage & Realtime Sync]
+<p align="center">
+    ![System Architecture Diagram](assets/architecture.png)
+</p> 
 
 ---
 
