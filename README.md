@@ -79,8 +79,9 @@ AidConnect is a fully autonomous **multi-agent AI system** that continuously mon
 ## 🏗️ System Architecture
 
 <p align="center">
-    ![System Architecture Diagram](assets/architecture.png)
+    <img width="864" height="552" alt="architecture" src="https://github.com/user-attachments/assets/c83ba51b-ede9-4165-ade6-0e7b6065efdd" />
 </p> 
+
 
 ---
 
