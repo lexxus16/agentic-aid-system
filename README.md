@@ -11,6 +11,9 @@
 The goal is to **bridge the gap between affected individuals and support organizations**, ensuring that help reaches victims faster and more efficiently.  
 
 This project was built as part of a **Built With AI Hackathon funded by Google Developer Groups**, where it secured **2nd Position** for its innovation and real-world impact.
+<p align="center">
+    <img width="864" height="552" alt="architecture" src="https://github.com/user-attachments/assets/2c7838f9-f865-4779-8e80-855a2bed2b1b" />
+</p> 
 
 ---
 
@@ -85,22 +88,83 @@ AidConnect is a fully autonomous **multi-agent AI system** that continuously mon
 
 ---
 
-<!-- ## Technologies Used
+## ⚙️How to Run This Project
+This is a **Next.js application** integrated with **Google’s Genkit and Gemini AI**, designed to autonomously identify and report social impact incidents using AI workflows and real-time social data.
 
-| Category | Technologies |
-|-----------|---------------|
-| Programming Language | Python |
-| AI & NLP | Gemini AI |
-| APIs | Twitter API, Facebook Graph API, WhatsApp Business API |
-| Backend | Firebase Studio |
-| Architecture | Agentic AI (Autonomous Multi-Agent System) |
-| Data Processing | Python Requests, JSON, REST APIs |
-| Storage | Firebase Realtime Database |
-| Communication | WhatsApp API, Email Automation |
-| Deployment | Firebase Hosting / Cloud Functions |
+---
+### Prerequisites
+1. **Node.js** (version 18 or higher)
+2. **npm** or **yarn** package manager
+3. **Google AI API key** (for Gemini AI functionality)
 
---- -->
+### Step 1: Install Dependencies
+```bash
+npm install
+```
 
+### Step 2: Set up Environment Variables
+You'll need to create a `.env.local` file in the root directory with your Google AI API key:
+
+```bash
+# Create the environment file
+touch .env.local
+```
+
+Add the following to `.env.local`:
+```
+GOOGLE_API_KEY=your_google_ai_api_key_here
+```
+
+**To get a Google AI API key:**
+1. Go to [Google AI Studio](https://aistudio.google.com/)
+2. Sign in with your Google account
+3. Create a new API key
+4. Copy the key and paste it in your `.env.local` file
+
+### Step 3: Run the Development Server
+The project has multiple run modes:
+
+**For the main Next.js application:**
+```bash
+npm run dev
+```
+This will start the development server on port 9002 (http://localhost:9002)
+
+**For the AI/Genkit development server:**
+```bash
+npm run genkit:dev
+```
+This runs the AI flows and tools separately.
+
+**For watching AI changes:**
+```bash
+npm run genkit:watch
+```
+This runs the AI server with file watching enabled.
+
+### Step 4: Access the Application
+- **Main App**: http://localhost:9002
+- **AI Dashboard**: The Genkit server will show its own URL when started
+
+### Available Scripts
+- `npm run dev` - Start Next.js development server
+- `npm run build` - Build for production
+- `npm run start` - Start production server
+- `npm run lint` - Run ESLint
+- `npm run typecheck` - Run TypeScript type checking
+- `npm run genkit:dev` - Start AI development server
+- `npm run genkit:watch` - Start AI server with file watching
+---
+## ☁️ Role of Firebase Studio
+
+**Google Firebase Studio** was central to development and deployment:
+- Provided a **real-time database** for storing incident data and verification logs.  
+- Enabled **fast API communication** between AI agents and end-users.  
+- Simplified **authentication and security** for sensitive workflows.  
+- Supported **scalable cloud deployment** without managing heavy infrastructure.  
+- Allowed rapid **prototyping** and iteration during the hackathon.
+
+---
 ## ⚙️ Features
 
 ✅ Real-time incident detection from social media  
@@ -129,16 +193,7 @@ recognizing innovation, technical excellence, and social impact.
 
 ---
 
-## ☁️ Role of Firebase Studio
 
-**Google Firebase Studio** was central to development and deployment:
-- Provided a **real-time database** for storing incident data and verification logs.  
-- Enabled **fast API communication** between AI agents and end-users.  
-- Simplified **authentication and security** for sensitive workflows.  
-- Supported **scalable cloud deployment** without managing heavy infrastructure.  
-- Allowed rapid **prototyping** and iteration during the hackathon.
-
----
 
 <!-- ## 👥 Team InnovAid
 
