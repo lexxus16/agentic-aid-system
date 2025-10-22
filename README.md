@@ -32,7 +32,7 @@ AidConnect fills all these gaps using Agentic AI.
 
 ## 🚀 Solution
 
-AidConnect is a fully autonomous multi-agent AI system that continuously monitors and analyzes social media discussions to detect ongoing or emerging incidents.  
+AidConnect is a fully autonomous **multi-agent AI system** that continuously monitors and analyzes social media discussions to detect ongoing or emerging incidents.  
 
 ### How It Works:
 1. **Data Scraping:**  
@@ -77,23 +77,28 @@ AidConnect is a fully autonomous multi-agent AI system that continuously monitor
 
 ## 🏗️ System Architecture
 
-[Social Media APIs]
-↓
-[Data Scraper Agent]
-↓
-[Gemini AI Summarizer]
-↓
-[Verification Agent → WhatsApp Business API → Police/Authorities]
-↓
-[Incident Report Generator]
-↓
-[NGO + Media Dissemination Module]
-↓
-[Firebase Backend for Storage & Realtime Sync]
 
 ---
 
-## Technologies Used
+Or, if you want a **more visually styled version** that looks cleaner on GitHub, use this **ASCII diagram with code fencing**:
+
+```markdown
+## 🏗️ System Architecture
+
+```mermaid
+flowchart TD
+    A[Social Media APIs] --> B[Data Scraper Agent]
+    B --> C[Gemini AI Summarizer]
+    C --> D[Verification Agent]
+    D --> E[WhatsApp Business API]
+    E --> F[Police / Authorities]
+    D --> G[Incident Report Generator]
+    G --> H[NGO + Media Dissemination Module]
+    H --> I[Firebase Backend for Storage & Realtime Sync]
+
+---
+
+<!-- ## Technologies Used
 
 | Category | Technologies |
 |-----------|---------------|
@@ -107,7 +112,7 @@ AidConnect is a fully autonomous multi-agent AI system that continuously monitor
 | Communication | WhatsApp API, Email Automation |
 | Deployment | Firebase Hosting / Cloud Functions |
 
----
+--- -->
 
 ## ⚙️ Features
 
@@ -122,12 +127,12 @@ AidConnect is a fully autonomous multi-agent AI system that continuously monitor
 
 ## 🔥 Achievement
 
-🏆 **Secured 2nd Position** at Built With AI Hackathon funded by Google Developers,  
+🏆 **Secured 2nd Position** at Built With AI Hackathon funded by Google Developer Groups,  
 recognizing innovation, technical excellence, and social impact.
 
 ---
 
-## 🧱 Future Enhancements
+## Future Enhancements
 
 - Add **geolocation mapping** for region-based response prioritization.  
 - Integrate **multilingual AI models** to detect regional posts in local languages.  
@@ -165,7 +170,7 @@ This project is licensed under the **MIT License** — free to use, modify, and 
 
 --- -->
 
-## 💬 Acknowledgments
+## Acknowledgments
 
 Special thanks to:
 - **Google** for funding and organizing the Hackathon  
@@ -175,7 +180,6 @@ Special thanks to:
 ---
 
 ### ⭐ If you found this project inspiring, consider giving it a star on GitHub!  
-Together, let’s make **AI for social good** a reality.
 
 
 
@@ -195,7 +199,7 @@ Together, let’s make **AI for social good** a reality.
 
 
 
----
+<!-- ---
 # Firebase Studio
 
 This is a NextJS starter in Firebase Studio.
@@ -203,4 +207,4 @@ This is a NextJS starter in Firebase Studio.
 To get started, take a look at src/app/page.tsx.
 
 ## Alert Karachi 
-This project was developed during BWAI Hackathon 
+This project was developed during BWAI Hackathon  -->
